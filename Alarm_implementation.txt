@@ -1,0 +1,18 @@
+[MP] 알람 기능 구현 요약 - Progress Report Word Script
+
+화면이 꺼져 있거나, 앱이 종료되었거나, 디바이스를 껐다 켰을 때도 알람이 울려야 하므로 다음 권한을 manifest에 추가한다.
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+앱이 실행되면, RingtoneService의 onCreate()가 호출된다.
+RingtoneService는 NotificationHelper를 통해 알람 소리와 노티피케이션을 출력할 준비를 한다.(최초1회 실행)
+Timepicker를 통해 MainActivity에서 AlarmManager에 유저가 원하는 시간을 등록한다.
+AlarmReceiver Intent와 Calendar 객체를 생성한 후 시간을 세팅하고, AlarmReceiver에 설정된 시간을 넘긴다.
+설정한 시간이 되면, AlarmReceiver가 ShowNotification과 RingtoneService를 콜한다.
+RingtoneService는 MediaPlayer를 통해 raw 디렉터리의 .mp3파일을  재생한다.
+ShowNotification은 사용자에게 상단바 알림을 보여준다.
+노티피케이션을 밀어서 지우거나, 종료버튼으로 알람을 끄게 되면 MainActivity의 releaseAlarm을 콜하게 되고, 알람이 완전히 종료된다.
+
+추가로, BackPressHandler를 통해 백버튼을 2번 누르게 되면 앱이 완전히 종료되도록 구현하였다.
